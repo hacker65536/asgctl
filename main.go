@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/hacker65536/goapptemplate/cmd"
+import "github.com/hacker65536/asgctl/cmd"
 
 func main() {
 	cmd.Execute()
