@@ -3,6 +3,7 @@ package myaws
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -26,6 +27,11 @@ func LsAsg(m map[string]string) {
 		log.Fields{
 			"res": r,
 		}).Debug("want ")
+
+	for _, v := range r {
+
+		fmt.Println(v)
+	}
 }
 
 func leftJoin(ss ...[]string) []string {
