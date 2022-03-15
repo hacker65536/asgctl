@@ -16,8 +16,10 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
+	"strings"
 
+	"github.com/hacker65536/asgctl/pkg/myaws"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -33,18 +35,24 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		debug, _ := cmd.Flags().GetBool("debug")
+		if debug {
+			log.SetLevel(log.DebugLevel)
+		}
 		viper.BindPFlags(cmd.PersistentFlags())
 
-		fmt.Println(viper.Get("project"))
+		log.WithFields(
+			log.Fields{
+				"project": viper.Get("project"),
+				"stage":   viper.Get("stage"),
+			}).Debug("args")
 
+		filters := make(map[string]string)
 
-		
-		fmt.Println(viper.Get("stage"))
-		if viper.Get("stage") != "" {
-			fmt.Println(viper.Get("stage"))
-		} else {
-			fmt.Println("no data")
-		}
+		// capitalize keys
+		filters[strings.Title("project")] = viper.GetString("project")
+		filters[strings.Title("stage")] = viper.GetString("stage")
+		myaws.LsAsg(filters)
 	},
 }
 

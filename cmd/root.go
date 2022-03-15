@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"os"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
 	"github.com/spf13/viper"
@@ -38,7 +39,20 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	Run: func(cmd *cobra.Command, args []string) {
+		debug, _ := cmd.Flags().GetBool("debug")
+		if debug {
+			log.SetLevel(log.DebugLevel)
+		}
+		// If a config file is found, read it in.
+		if err := viper.ReadInConfig(); err == nil {
+			log.WithFields(
+				log.Fields{
+					"config file": viper.ConfigFileUsed(),
+				}).Debug()
+		}
+
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -59,6 +73,7 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.PersistentFlags().BoolP("debug", "d", false, "show debug message")
 }
 
 // initConfig reads in config file and ENV variables if set.
